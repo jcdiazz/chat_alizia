@@ -102,11 +102,12 @@ if "session_id" not in st.session_state:
 if "user_id" not in st.session_state:
     st.session_state.user_id = f"USER-{datetime.now(LIMA_TZ).strftime('%Y%m%d%H%M%S')}"
 
-# Título de la aplicación
+# Logo centrado
 col1, col2, col3 = st.columns([1, 2, 1])
 with col2:
     st.image("logo_alizia.png", use_container_width=True)
 
+# Descripción
 st.markdown("""
 **¡Hola, Angello!** Soy **ALiZiA**, tu aliada inteligente. Estoy aquí para ayudarte a obtener información clara y rápida sobre tus comercios, transacciones, montos, abonos y comparativos.
 
@@ -116,39 +117,6 @@ No te preocupes por cómo preguntar: **te entenderé a la perfección, así que 
 """)
 
 st.divider()
-
-# Sidebar con información
-with st.sidebar:
-    st.header("ALiZiA")
-
-    # User ID con botón para generar nuevo
-    st.write("User ID:")
-    col1, col2 = st.columns([4, 1])
-    with col1:
-        st.code(st.session_state.user_id, language=None)
-    with col2:
-        if st.button("🔄", key="refresh_user", help="Generar nuevo User ID"):
-            st.session_state.user_id = f"USER-{datetime.now(LIMA_TZ).strftime('%Y%m%d%H%M%S')}"
-            st.session_state.messages = []
-            st.session_state.session_id = f"{datetime.now(LIMA_TZ).strftime('%Y%m%d%H%M%S')}"
-            st.rerun()
-
-    # Session ID con botón para generar nuevo
-    st.write("Session ID:")
-    col3, col4 = st.columns([4, 1])
-    with col3:
-        st.code(st.session_state.session_id, language=None)
-    with col4:
-        if st.button("🔄", key="refresh_session", help="Generar nuevo Session ID"):
-            st.session_state.session_id = f"{datetime.now(LIMA_TZ).strftime('%Y%m%d%H%M%S')}"
-            st.rerun()
-
-    # Botón para limpiar el chat
-    if st.button("🗑️ Limpiar Chat", use_container_width=True):
-        st.session_state.messages = []
-        # Generar nuevo session_id
-        st.session_state.session_id = f"{datetime.now(LIMA_TZ).strftime('%Y%m%d%H%M%S')}"
-        st.rerun()
 
 # Contenedor para el chat
 chat_container = st.container()
