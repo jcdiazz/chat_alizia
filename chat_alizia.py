@@ -103,7 +103,7 @@ if "user_id" not in st.session_state:
     st.session_state.user_id = f"USER-{datetime.now(LIMA_TZ).strftime('%Y%m%d%H%M%S')}"
 
 # Título de la aplicación
-st.title("🤖 Mis datos de comercio")
+st.title("🤖 ALiZiA")
 
 # Sidebar con información
 with st.sidebar:
