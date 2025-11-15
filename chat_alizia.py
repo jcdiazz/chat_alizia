@@ -106,7 +106,7 @@ if "user_id" not in st.session_state:
 st.title("🤖 ALiZiA")
 
 st.markdown("""
-**¡Hola, Angello!** Soy **ALiZiA**, tu aliada inteligente. Estoy aquí para ayudarte a obtener información clara y rápida sobre tus comercios, transacciones, montos, abonos y comparativos.
+__¡Hola, Angello!__ Soy **ALiZiA**, tu aliada inteligente. Estoy aquí para ayudarte a obtener información clara y rápida sobre tus comercios, transacciones, montos, abonos y comparativos.
 
 No te preocupes por cómo preguntar: **te entenderé a la perfección, así que pregúntame sin miedo**. Puedo buscar, analizar y mostrarte los datos en texto, tablas o gráficos, según lo necesites.
 
