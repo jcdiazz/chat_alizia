@@ -53,75 +53,36 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Configuración de la API de ALiZiA
-API_ENDPOINT = "https://dev-izi-chatbot-genai-api-v1-322392286721.us-central1.run.app/bloque2"
+API_ENDPOINT = "https://alizia-v4.calmdesert-4804d17b.eastus.azurecontainerapps.io"
 API_HEADERS = {
     "Content-Type": "application/json",
     "token": "dev-chatpgt-token-xbpr435"
 }
 
-def call_api(message, user_id="USER-00001", session_id=None):
+def call_api(message):
     """
-    Función para llamar a la API de Izipay
+    Función para llamar a la API de ALiZiA
     """
     try:
-        # Generar session_id único si no se proporciona
-        if not session_id:
-            session_id = f"{datetime.now(LIMA_TZ).strftime('%Y%m%d%H%M%S')}"
-
-        # Configuración para datos de comercio
-        base_config = {
-            "question": message,
-            "metadata": {
-                "userId": user_id,
-                "channelType": "Demo-Web",
-                "sessionId": session_id
-            },
-            "configuration": {
-                "business_case": "Chatbot de asesoria de Izipay",
-                "prompt_params": {
-                    "assistant_name": "IziBot",
-                    "assistant_role": "Actúa como asistente virtual de Izipay.",
-                    "company_name": "Izipay",
-                    "company_activity": "Venta de servicios y terminales de puntos de venta llamados POS para la compra y venta.",
-                    "conversation_purpose": "Atiende las consultas de los usuarios con entusiasmo y responde siempre de manera clara, breve y precisa. Tu misión principal es brindar soporte sobre todos los productos y servicios de Izipay, especialmente los terminales POS y cualquier otro servicio relacionado.\n- Tono: Siempre animado, profesional y directo.\n- Saludo del usuario: Si el usuario inicia con un saludo, no devuelvas el saludo. En lugar de eso, dile que puedes ayudarlo con sus preguntas sobre sus datos de comercio.\n- Preguntas ambiguas: Si la pregunta no está clara, pide detalles específicos para poder ofrecer una respuesta adecuada.\n- Límites: Si no puedes resolver algo, redirige al usuario con instrucciones claras para contactar al equipo de soporte humano."
-                },
-                "config_params": {
-                    "maxMinutes": "None",
-                    "temperature": 0.3,
-                    "k_top_retrieval": 3
-                },
-                "knowledge_stores": ["dev_izipay_index_daco_azureopenai"]
-            }
+        # Configuración simplificada según el nuevo endpoint
+        data = {
+            "question": message
         }
 
         response = requests.post(
             API_ENDPOINT,
             headers=API_HEADERS,
-            json=base_config,
+            json=data,
             timeout=90
         )
 
         if response.status_code == 200:
             result = response.json()
-            # Extraer la respuesta específica de Izipay
+            # Extraer la respuesta
             answer = result.get("answer", "Sin respuesta disponible")
-
-            # Información adicional que se puede mostrar
-            trace = result.get("trace", "")
-            trace_description = result.get("trace_description", "")
-            satisfaction = result.get("satisfaction", "")
-            transfer = result.get("transfer", "")
-            finish = result.get("finish", "")
-            citations = result.get("citations", [])
 
             return {
                 "answer": answer,
-                "trace": trace,
-                "trace_description": trace_description,
-                "citations": citations,
-                "satisfaction": satisfaction,
-                "transfer": transfer,
-                "finish": finish,
                 "raw_response": result
             }, None
         else:
@@ -132,13 +93,9 @@ def call_api(message, user_id="USER-00001", session_id=None):
     except Exception as e:
         return f"Error inesperado: {str(e)}", "error"
 
-# Inicializar el historial de chat y configuración
+# Inicializar el historial de chat
 if "messages" not in st.session_state:
     st.session_state.messages = []
-if "session_id" not in st.session_state:
-    st.session_state.session_id = f"{datetime.now(LIMA_TZ).strftime('%Y%m%d%H%M%S')}"
-if "user_id" not in st.session_state:
-    st.session_state.user_id = f"USER-{datetime.now(LIMA_TZ).strftime('%Y%m%d%H%M%S')}"
 
 # Logo centrado y más pequeño
 col1, col2, col3 = st.columns([1, 2, 1])
@@ -202,11 +159,7 @@ if prompt := st.chat_input("Escribe tu mensaje aquí..."):
     # Llamar a la API y mostrar respuesta
     with st.chat_message("assistant"):
         with st.spinner("Pensando..."):
-            response_data, error = call_api(
-                prompt, 
-                st.session_state.user_id, 
-                st.session_state.session_id
-            )
+            response_data, error = call_api(prompt)
 
             if error:
                 st.error(response_data)
@@ -219,20 +172,6 @@ if prompt := st.chat_input("Escribe tu mensaje aquí..."):
             st.markdown(f"<div style='font-size: 1.05rem;'>{response_text}</div>", unsafe_allow_html=True)
             response_timestamp = datetime.now(LIMA_TZ).strftime("%H:%M")
             st.caption(f"🕐 {response_timestamp}")
-
-            # Mostrar información adicional si está disponible (más discreto)
-            if response_info and response_info.get("trace_description"):
-                with st.expander("ℹ️ Detalles técnicos"):
-                    if response_info.get("trace"):
-                        st.write(f"**Traza:** {response_info['trace']}")
-                    st.write(f"**Descripción:** {response_info['trace_description']}")
-                    
-                    # Mostrar citas si están disponibles
-                    if response_info.get("citations"):
-                        st.write("**Referencias:**")
-                        for i, citation in enumerate(response_info["citations"][:3]):
-                            option = citation.get("metadata", {}).get("option", "N/A")
-                            st.write(f"• {option}")
 
             # Agregar respuesta del asistente al historial
             st.session_state.messages.append({
