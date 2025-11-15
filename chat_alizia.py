@@ -160,7 +160,7 @@ with st.sidebar:
         st.rerun()
 
     # Configuración de usuario
-    st.subheader("Configuración")
+    st.subheader("ALiZiA")
 
     # User ID con botón para generar nuevo
     st.write("User ID:")
