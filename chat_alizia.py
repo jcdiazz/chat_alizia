@@ -11,8 +11,46 @@ LIMA_TZ = ZoneInfo("America/Lima")
 st.set_page_config(
     page_title="Chat ALiZiA",
     page_icon="🤖",
-    layout="wide"
+    layout="centered"
 )
+
+# CSS personalizado para mejorar la apariencia
+st.markdown("""
+    <style>
+    /* Ajustar el tamaño de la fuente general */
+    .stMarkdown {
+        font-size: 1.1rem;
+    }
+    
+    /* Mejorar el espaciado del contenedor principal */
+    .block-container {
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+        max-width: 900px;
+    }
+    
+    /* Estilo para el input del chat */
+    .stChatInput {
+        border-radius: 20px;
+    }
+    
+    /* Mejorar el espaciado de los mensajes */
+    .stChatMessage {
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    /* Ocultar el botón de menú y footer de Streamlit */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    
+    /* Ajustar el tamaño del separador */
+    hr {
+        margin-top: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    </style>
+""", unsafe_allow_html=True)
 
 # Configuración de la API de ALiZiA
 API_ENDPOINT = "https://dev-izi-chatbot-genai-api-v1-322392286721.us-central1.run.app/bloque2"
@@ -102,20 +140,29 @@ if "session_id" not in st.session_state:
 if "user_id" not in st.session_state:
     st.session_state.user_id = f"USER-{datetime.now(LIMA_TZ).strftime('%Y%m%d%H%M%S')}"
 
-# Logo centrado
+# Logo centrado y más pequeño
 col1, col2, col3 = st.columns([1, 2, 1])
 with col2:
-    st.image("logo_alizia.png", use_container_width=True)
+    st.image("logo_alizia.png", width=400)
 
-# Descripción
+st.markdown("<br>", unsafe_allow_html=True)
+
+# Descripción con mejor formato y tamaño
 st.markdown("""
-**¡Hola, Angello!** Soy **ALiZiA**, tu aliada inteligente. Estoy aquí para ayudarte a obtener información clara y rápida sobre tus comercios, transacciones, montos, abonos y comparativos.
+<div style='text-align: center; font-size: 1.15rem; line-height: 1.8;'>
+    <strong>¡Hola, Angello!</strong> Soy <strong>ALiZiA</strong>, tu aliada inteligente. 
+    <br><br>
+    Estoy aquí para ayudarte a obtener información clara y rápida sobre tus comercios, 
+    transacciones, montos, abonos y comparativos.
+    <br><br>
+    <strong>Te entenderé a la perfección, así que pregúntame sin miedo.</strong> 
+    Puedo buscar, analizar y mostrarte los datos en texto, tablas o gráficos, según lo necesites.
+    <br><br>
+    ¿Listo para comenzar, Angello? 😊
+</div>
+""", unsafe_allow_html=True)
 
-No te preocupes por cómo preguntar: **te entenderé a la perfección, así que pregúntame sin miedo**. Puedo buscar, analizar y mostrarte los datos en texto, tablas o gráficos, según lo necesites.
-
-¿Listo para comenzar, Angello? 😊
-""")
-
+st.markdown("<br>", unsafe_allow_html=True)
 st.divider()
 
 # Contenedor para el chat
@@ -123,9 +170,17 @@ chat_container = st.container()
 
 # Mostrar historial de mensajes
 with chat_container:
+    if len(st.session_state.messages) == 0:
+        # Mensaje de bienvenida cuando no hay conversación
+        st.markdown("""
+        <div style='text-align: center; padding: 2rem; color: #666; font-size: 1.1rem;'>
+            👋 ¡Empieza preguntándome lo que necesites!
+        </div>
+        """, unsafe_allow_html=True)
+    
     for message in st.session_state.messages:
         with st.chat_message(message["role"]):
-            st.markdown(message["content"])
+            st.markdown(f"<div style='font-size: 1.05rem;'>{message['content']}</div>", unsafe_allow_html=True)
             if message.get("timestamp"):
                 st.caption(f"🕐 {message['timestamp']}")
 
@@ -141,7 +196,7 @@ if prompt := st.chat_input("Escribe tu mensaje aquí..."):
     
     # Mostrar mensaje del usuario
     with st.chat_message("user"):
-        st.markdown(prompt)
+        st.markdown(f"<div style='font-size: 1.05rem;'>{prompt}</div>", unsafe_allow_html=True)
         st.caption(f"🕐 {timestamp}")
     
     # Llamar a la API y mostrar respuesta
@@ -161,26 +216,23 @@ if prompt := st.chat_input("Escribe tu mensaje aquí..."):
                 response_text = response_data["answer"]
                 response_info = response_data
 
-            st.markdown(response_text)
+            st.markdown(f"<div style='font-size: 1.05rem;'>{response_text}</div>", unsafe_allow_html=True)
             response_timestamp = datetime.now(LIMA_TZ).strftime("%H:%M")
             st.caption(f"🕐 {response_timestamp}")
 
-            # Mostrar información adicional si está disponible
+            # Mostrar información adicional si está disponible (más discreto)
             if response_info and response_info.get("trace_description"):
-                with st.expander("📋 Información adicional"):
+                with st.expander("ℹ️ Detalles técnicos"):
                     if response_info.get("trace"):
                         st.write(f"**Traza:** {response_info['trace']}")
-                    st.write(f"**Descripción de la traza:** {response_info['trace_description']}")
-                    st.write(f"**Satisfacción:** {response_info['satisfaction']}")
-                    st.write(f"**Transferir:** {response_info['transfer']}")
-                    st.write(f"**Finalizar:** {response_info['finish']}")
-
+                    st.write(f"**Descripción:** {response_info['trace_description']}")
+                    
                     # Mostrar citas si están disponibles
                     if response_info.get("citations"):
-                        st.write("**Citas:**")
-                        for i, citation in enumerate(response_info["citations"][:3]):  # Mostrar máximo 3 citas
+                        st.write("**Referencias:**")
+                        for i, citation in enumerate(response_info["citations"][:3]):
                             option = citation.get("metadata", {}).get("option", "N/A")
-                            st.write(f"- {option}")
+                            st.write(f"• {option}")
 
             # Agregar respuesta del asistente al historial
             st.session_state.messages.append({
