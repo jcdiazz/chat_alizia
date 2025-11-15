@@ -143,7 +143,7 @@ if "user_id" not in st.session_state:
 # Logo centrado y más pequeño
 col1, col2, col3 = st.columns([1, 2, 1])
 with col2:
-    st.image("logo_alizia.png", width=400)
+    st.image("logo_alizia.png", width=300)
 
 st.markdown("<br>", unsafe_allow_html=True)
 
