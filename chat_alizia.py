@@ -72,8 +72,7 @@ def call_api(message):
         response = requests.post(
             API_ENDPOINT,
             headers=API_HEADERS,
-            json=data,
-            timeout=90
+            json=data
         )
 
         if response.status_code == 200:
