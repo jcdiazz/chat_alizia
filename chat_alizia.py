@@ -53,7 +53,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Configuración de la API de ALiZiA
-API_ENDPOINT = "https://alizia-v4.calmdesert-4804d17b.eastus.azurecontainerapps.io"
+API_ENDPOINT = "https://alizia-v4.calmdesert-4804d17b.eastus.azurecontainerapps.io/conversation"
 API_HEADERS = {
     "Content-Type": "application/json",
     "token": "dev-chatpgt-token-xbpr435"
