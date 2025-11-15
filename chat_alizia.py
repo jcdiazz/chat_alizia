@@ -105,19 +105,19 @@ if "user_id" not in st.session_state:
 # Título de la aplicación
 st.title("🤖 ALiZiA")
 
+st.markdown("""
+¡Hola, Angello! Soy ALiZiA, tu aliada inteligente. Estoy aquí para ayudarte a obtener información clara y rápida sobre tus comercios, transacciones, montos, abonos y comparativos.
+
+No te preocupes por cómo preguntar: te entenderé a la perfección, así que pregúntame sin miedo. Puedo buscar, analizar y mostrarte los datos en texto, tablas o gráficos, según lo necesites.
+
+¿Listo para comenzar, Angello? 😊
+""")
+
+st.divider()
+
 # Sidebar con información
 with st.sidebar:
     st.header("ALiZiA")
-
-    st.markdown("""
-    ¡Hola, Angello! Soy ALiZiA, tu aliada inteligente. Estoy aquí para ayudarte a obtener información clara y rápida sobre tus comercios, transacciones, montos, abonos y comparativos.
-    
-    No te preocupes por cómo preguntar: te entenderé a la perfección, así que pregúntame sin miedo. Puedo buscar, analizar y mostrarte los datos en texto, tablas o gráficos, según lo necesites.
-    
-    ¿Listo para comenzar, Angello? 😊
-    """)
-    
-    st.divider()
 
     # User ID con botón para generar nuevo
     st.write("User ID:")
