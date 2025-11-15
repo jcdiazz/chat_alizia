@@ -103,10 +103,9 @@ if "user_id" not in st.session_state:
     st.session_state.user_id = f"USER-{datetime.now(LIMA_TZ).strftime('%Y%m%d%H%M%S')}"
 
 # Título de la aplicación
-#st.title("🤖 ALiZiA")
-col_logo, col_space = st.columns([1, 3])
-with col_logo:
-    st.image("logo_alizia.png", width=300)
+col1, col2, col3 = st.columns([1, 2, 1])
+with col2:
+    st.image("logo_alizia.png", use_container_width=True)
 
 st.markdown("""
 **¡Hola, Angello!** Soy **ALiZiA**, tu aliada inteligente. Estoy aquí para ayudarte a obtener información clara y rápida sobre tus comercios, transacciones, montos, abonos y comparativos.
