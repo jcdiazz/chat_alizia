@@ -1,1 +1,2 @@
-# chat_alizia
+# chat ALiZiA
+Chat con Gen AI
