@@ -53,26 +53,28 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Configuración de la API de ALiZiA
-API_ENDPOINT = "https://alizia-v4.calmdesert-4804d17b.eastus.azurecontainerapps.io/conversation"
+API_ENDPOINT = "https://alizia-v4.calmdesert-4804d17b.eastus.azurecontainerapps.io"
 API_HEADERS = {
     "Content-Type": "application/json",
     "token": "dev-chatpgt-token-xbpr435"
 }
 
-def call_api(message):
+def call_api(message, session_id):
     """
     Función para llamar a la API de ALiZiA
     """
     try:
-        # Configuración simplificada según el nuevo endpoint
+        # Configuración con session_id
         data = {
-            "question": message
+            "question": message,
+            "session_id": session_id
         }
 
         response = requests.post(
             API_ENDPOINT,
             headers=API_HEADERS,
-            json=data
+            json=data,
+            timeout=90
         )
 
         if response.status_code == 200:
@@ -92,9 +94,11 @@ def call_api(message):
     except Exception as e:
         return f"Error inesperado: {str(e)}", "error"
 
-# Inicializar el historial de chat
+# Inicializar el historial de chat y session_id
 if "messages" not in st.session_state:
     st.session_state.messages = []
+if "session_id" not in st.session_state:
+    st.session_state.session_id = f"{datetime.now(LIMA_TZ).strftime('%Y%m%d%H%M%S')}"
 
 # Logo centrado y más pequeño
 col1, col2, col3 = st.columns([1, 2, 1])
@@ -158,7 +162,7 @@ if prompt := st.chat_input("Escribe tu mensaje aquí..."):
     # Llamar a la API y mostrar respuesta
     with st.chat_message("assistant"):
         with st.spinner("Pensando..."):
-            response_data, error = call_api(prompt)
+            response_data, error = call_api(prompt, st.session_state.session_id)
 
             if error:
                 st.error(response_data)
