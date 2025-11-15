@@ -172,14 +172,15 @@ if prompt := st.chat_input("Escribe tu mensaje aquí..."):
                 response_text = response_data["answer"]
                 response_info = response_data
 
-            st.markdown(f"<div style='font-size: 1.05rem;'>{response_text}</div>", unsafe_allow_html=True)
-            response_timestamp = datetime.now(LIMA_TZ).strftime("%H:%M")
-            st.caption(f"🕐 {response_timestamp}")
+        # Mostrar la respuesta después de obtenerla
+        st.markdown(f"<div style='font-size: 1.05rem;'>{response_text}</div>", unsafe_allow_html=True)
+        response_timestamp = datetime.now(LIMA_TZ).strftime("%H:%M")
+        st.caption(f"🕐 {response_timestamp}")
 
-            # Agregar respuesta del asistente al historial
-            st.session_state.messages.append({
-                "role": "assistant",
-                "content": response_text,
-                "timestamp": response_timestamp,
-                "metadata": response_info
-            })
+        # Agregar respuesta del asistente al historial
+        st.session_state.messages.append({
+            "role": "assistant",
+            "content": response_text,
+            "timestamp": response_timestamp,
+            "metadata": response_info
+        })
